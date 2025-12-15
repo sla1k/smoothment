@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="6.0.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+        <PackageReference Include="Moq" Version="4.20.72"/>
+        <PackageReference Include="Scrutor" Version="7.0.0"/>
+        <PackageReference Include="System.CommandLine" Version="2.0.1"/>
+        <PackageReference Include="xunit.v3" Version="3.2.1"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Smoothment\Smoothment.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Converters\TBank\tbank_transactions.csv">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Converters\TBank\tbank_transaction.ofx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Converters\IdBank\idbank_transactions.xlsx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Converters\Revolut\revolut_transactions.csv">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Converters\Wise\wise_transactions.csv">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Converters\TBank\tbank_transactions_win1251.csv">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Converters\BBVA\bbva.xlsx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Converters\Santander\santander.xlsx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
