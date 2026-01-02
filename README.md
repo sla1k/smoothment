@@ -93,6 +93,71 @@ dotnet run --project Smoothment -- convert \
   --output=./exports/all_accounts.ofx
 ```
 
+## Managing Categories and Payees
+
+The CLI provides `category` and `payee` subcommands for managing the enrichment database directly from the command line.
+
+### Category Commands
+
+```bash
+# List all categories
+dotnet run --project Smoothment -- category
+
+# Add a new category
+dotnet run --project Smoothment -- category add "Groceries"
+
+# Remove a category
+dotnet run --project Smoothment -- category remove "Groceries"
+
+# Add a synonym to a category
+dotnet run --project Smoothment -- category synonym "Groceries" "supermarket"
+```
+
+### Payee Commands
+
+```bash
+# List all payees
+dotnet run --project Smoothment -- payee
+
+# Add a new payee
+dotnet run --project Smoothment -- payee add "Starbucks"
+
+# Add a payee with expense/top-up metadata
+dotnet run --project Smoothment -- payee add "Starbucks" \
+  --expense-category="Coffee" \
+  --expense-description="Coffee shop" \
+  --topup-category="Refund" \
+  --topup-description="Refund from coffee shop"
+
+# Remove a payee
+dotnet run --project Smoothment -- payee remove "Starbucks"
+
+# Add a synonym to a payee
+dotnet run --project Smoothment -- payee synonym "Starbucks" "STARBUCKS CORP"
+```
+
+### Command Reference
+
+| Command | Description |
+|---------|-------------|
+| `category` | List all categories |
+| `category add <name>` | Add a new category |
+| `category remove <name>` | Remove a category |
+| `category synonym <name> <synonym>` | Add a synonym to a category |
+| `payee` | List all payees |
+| `payee add <name> [options]` | Add a new payee |
+| `payee remove <name>` | Remove a payee |
+| `payee synonym <name> <synonym>` | Add a synonym to a payee |
+
+#### Payee Add Options
+
+| Option | Description |
+|--------|-------------|
+| `--expense-category` | Category for expense transactions |
+| `--expense-description` | Description for expense transactions |
+| `--topup-category` | Category for top-up transactions |
+| `--topup-description` | Description for top-up transactions |
+
 ## Output Formats
 
 ### CSV
