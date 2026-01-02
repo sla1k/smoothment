@@ -15,12 +15,47 @@ public static class CategoryCommand
 
             Categories are used to classify transactions during enrichment.
             Each category can have synonyms for matching alternative names.
+
+            Examples:
+              smoothment category                              # list all
+              smoothment category add "Groceries"              # add
+              smoothment category remove "Groceries"           # remove
+              smoothment category synonym "Groceries" "food"   # add synonym
             """);
 
         command.Subcommands.Add(CreateListCommand(serviceProvider));
         command.Subcommands.Add(CreateAddCommand(serviceProvider));
         command.Subcommands.Add(CreateRemoveCommand(serviceProvider));
         command.Subcommands.Add(CreateSynonymCommand(serviceProvider));
+
+        // Default action: list categories
+        command.SetAction(async (_, cancellationToken) =>
+        {
+            using var scope = serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<SmoothmentDbContext>();
+
+            var categories = await db.Categories
+                .OrderBy(c => c.Name)
+                .ToListAsync(cancellationToken);
+
+            if (categories.Count == 0)
+            {
+                Console.WriteLine("No categories found.");
+                return 0;
+            }
+
+            Console.WriteLine($"Categories ({categories.Count}):");
+            foreach (var category in categories)
+            {
+                Console.WriteLine($"  {category.Name}");
+                if (category.Synonymous.Length > 0)
+                {
+                    Console.WriteLine($"    Synonyms: {string.Join(", ", category.Synonymous)}");
+                }
+            }
+
+            return 0;
+        });
 
         return command;
     }
@@ -62,20 +97,16 @@ public static class CategoryCommand
 
     private static Command CreateAddCommand(IServiceProvider serviceProvider)
     {
-        var nameOption = new Option<string>("--name")
-        {
-            Description = "Name of the category to add",
-            Required = true
-        };
+        var nameArg = new Argument<string>("name", "Name of the category to add");
 
         var command = new Command("add", "Add a new category to the database")
         {
-            nameOption
+            nameArg
         };
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var name = parseResult.GetValue(nameOption)!;
+            var name = parseResult.GetValue(nameArg)!;
 
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SmoothmentDbContext>();
@@ -101,20 +132,16 @@ public static class CategoryCommand
 
     private static Command CreateRemoveCommand(IServiceProvider serviceProvider)
     {
-        var nameOption = new Option<string>("--name")
-        {
-            Description = "Name of the category to remove",
-            Required = true
-        };
+        var nameArg = new Argument<string>("name", "Name of the category to remove");
 
         var command = new Command("remove", "Remove a category from the database")
         {
-            nameOption
+            nameArg
         };
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var name = parseResult.GetValue(nameOption)!;
+            var name = parseResult.GetValue(nameArg)!;
 
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SmoothmentDbContext>();
@@ -140,28 +167,19 @@ public static class CategoryCommand
 
     private static Command CreateSynonymCommand(IServiceProvider serviceProvider)
     {
-        var nameOption = new Option<string>("--name")
-        {
-            Description = "Name of the category to add the synonym to",
-            Required = true
-        };
-
-        var synonymOption = new Option<string>("--synonym")
-        {
-            Description = "The synonym to add",
-            Required = true
-        };
+        var nameArg = new Argument<string>("name", "Name of the category");
+        var synonymArg = new Argument<string>("synonym", "The synonym to add");
 
         var command = new Command("synonym", "Add a synonym to a category")
         {
-            nameOption,
-            synonymOption
+            nameArg,
+            synonymArg
         };
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var name = parseResult.GetValue(nameOption)!;
-            var synonym = parseResult.GetValue(synonymOption)!;
+            var name = parseResult.GetValue(nameArg)!;
+            var synonym = parseResult.GetValue(synonymArg)!;
 
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SmoothmentDbContext>();

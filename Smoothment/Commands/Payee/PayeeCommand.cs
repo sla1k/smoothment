@@ -15,12 +15,49 @@ public static class PayeeCommand
 
             Payees are used to enrich transactions with category and description
             information. Each payee can have synonyms for matching alternative names.
+
+            Examples:
+              smoothment payee                                  # list all
+              smoothment payee add "Starbucks"                  # add
+              smoothment payee remove "Starbucks"               # remove
+              smoothment payee synonym "Starbucks" "SBUX"       # add synonym
             """);
 
         command.Subcommands.Add(CreateListCommand(serviceProvider));
         command.Subcommands.Add(CreateAddCommand(serviceProvider));
         command.Subcommands.Add(CreateRemoveCommand(serviceProvider));
         command.Subcommands.Add(CreateSynonymCommand(serviceProvider));
+
+        // Default action: list payees
+        command.SetAction(async (_, cancellationToken) =>
+        {
+            using var scope = serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<SmoothmentDbContext>();
+
+            var payees = await db.Payees
+                .OrderBy(p => p.Name)
+                .ToListAsync(cancellationToken);
+
+            if (payees.Count == 0)
+            {
+                Console.WriteLine("No payees found.");
+                return 0;
+            }
+
+            Console.WriteLine($"Payees ({payees.Count}):");
+            foreach (var payee in payees)
+            {
+                Console.WriteLine($"  {payee.Name}");
+                if (payee.ExpenseCategory is not null)
+                    Console.WriteLine($"    Expense: {payee.ExpenseCategory} - {payee.ExpenseDescription}");
+                if (payee.TopUpCategory is not null)
+                    Console.WriteLine($"    TopUp: {payee.TopUpCategory} - {payee.TopUpDescription}");
+                if (payee.Synonymous.Length > 0)
+                    Console.WriteLine($"    Synonyms: {string.Join(", ", payee.Synonymous)}");
+            }
+
+            return 0;
+        });
 
         return command;
     }
@@ -64,11 +101,7 @@ public static class PayeeCommand
 
     private static Command CreateAddCommand(IServiceProvider serviceProvider)
     {
-        var nameOption = new Option<string>("--name")
-        {
-            Description = "Name of the payee to add",
-            Required = true
-        };
+        var nameArg = new Argument<string>("name", "Name of the payee to add");
 
         var expenseCategoryOption = new Option<string?>("--expense-category")
         {
@@ -92,7 +125,7 @@ public static class PayeeCommand
 
         var command = new Command("add", "Add a new payee to the database")
         {
-            nameOption,
+            nameArg,
             expenseCategoryOption,
             expenseDescriptionOption,
             topUpCategoryOption,
@@ -101,7 +134,7 @@ public static class PayeeCommand
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var name = parseResult.GetValue(nameOption)!;
+            var name = parseResult.GetValue(nameArg)!;
             var expenseCategory = parseResult.GetValue(expenseCategoryOption);
             var expenseDescription = parseResult.GetValue(expenseDescriptionOption);
             var topUpCategory = parseResult.GetValue(topUpCategoryOption);
@@ -139,20 +172,16 @@ public static class PayeeCommand
 
     private static Command CreateRemoveCommand(IServiceProvider serviceProvider)
     {
-        var nameOption = new Option<string>("--name")
-        {
-            Description = "Name of the payee to remove",
-            Required = true
-        };
+        var nameArg = new Argument<string>("name", "Name of the payee to remove");
 
         var command = new Command("remove", "Remove a payee from the database")
         {
-            nameOption
+            nameArg
         };
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var name = parseResult.GetValue(nameOption)!;
+            var name = parseResult.GetValue(nameArg)!;
 
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SmoothmentDbContext>();
@@ -178,28 +207,19 @@ public static class PayeeCommand
 
     private static Command CreateSynonymCommand(IServiceProvider serviceProvider)
     {
-        var nameOption = new Option<string>("--name")
-        {
-            Description = "Name of the payee to add the synonym to",
-            Required = true
-        };
-
-        var synonymOption = new Option<string>("--synonym")
-        {
-            Description = "The synonym to add",
-            Required = true
-        };
+        var nameArg = new Argument<string>("name", "Name of the payee");
+        var synonymArg = new Argument<string>("synonym", "The synonym to add");
 
         var command = new Command("synonym", "Add a synonym to a payee")
         {
-            nameOption,
-            synonymOption
+            nameArg,
+            synonymArg
         };
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var name = parseResult.GetValue(nameOption)!;
-            var synonym = parseResult.GetValue(synonymOption)!;
+            var name = parseResult.GetValue(nameArg)!;
+            var synonym = parseResult.GetValue(synonymArg)!;
 
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SmoothmentDbContext>();
