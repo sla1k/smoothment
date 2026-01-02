@@ -2,7 +2,8 @@ using System.CommandLine;
 using System.Diagnostics;
 using Smoothment.Commands;
 using Smoothment.Commands.Convert;
-using Smoothment.Commands.Synonym;
+using Smoothment.Commands.Category;
+using Smoothment.Commands.Payee;
 using Smoothment.Converters;
 using Smoothment.Database;
 using Smoothment.Exporters;
@@ -34,7 +35,8 @@ var rootCommand = new RootCommand(
       - Transfer detection and type classification (Expense/TopUp)
     """);
 rootCommand.Subcommands.Add(ConvertCommand.Create(host.Services));
-rootCommand.Subcommands.Add(SynonymCommand.Create(host.Services));
+rootCommand.Subcommands.Add(CategoryCommand.Create(host.Services));
+rootCommand.Subcommands.Add(PayeeCommand.Create(host.Services));
 
 return rootCommand.Parse(args).Invoke();
 
@@ -90,7 +92,6 @@ IHost CreateHost()
 
     // Command handlers
     builder.Services.AddScoped<ICommandHandler<ConvertCommandOptions>, ConvertCommandHandler>();
-    builder.Services.AddScoped<ICommandHandler<SynonymCommandOptions>, SynonymCommandHandler>();
 
     return builder.Build();
 }
