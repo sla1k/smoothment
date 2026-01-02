@@ -39,59 +39,123 @@ The command line expects the lowercase key in every `--file` argument.
 - .NET 10 SDK (pinned via `global.json`).
 - SQLite is bundled with .NET, no external server required.
 
-## Getting Started
+## Installation
+
+Install as a global .NET tool:
+
+```bash
+dotnet tool install --global Smoothment
+```
+
+Or build from source:
 
 ```bash
 git clone https://github.com/sla1k/smoothment.git
 cd smoothment
-dotnet restore
-dotnet build
+dotnet pack -c Release
+dotnet tool install --global --add-source ./Smoothment/bin/Release Smoothment
 ```
 
-The first run will create a `smoothment.db` SQLite file next to the compiled executable (`Smoothment/bin/<config>/net10.0/`). It stores payees and categories that drive enrichment.
+The first run will create a `smoothment.db` SQLite file next to the executable. It stores payees and categories that drive enrichment.
 
-Run the full test suite before pushing changes:
+## Usage
+
+### Converting Transactions
 
 ```bash
-dotnet test
+smoothment convert \
+  --file=./tbank.csv:tbank:savings \
+  --file=./revolut.csv:revolut:main \
+  --output=./exports/all.csv \
+  --format=csv
 ```
 
-## Running Conversions
-
-All interaction happens through the `convert` subcommand:
-
-```bash
-dotnet run --project Smoothment -- convert \
-  --file=./fixtures/tbank.csv:tbank:savings \
-  --file=./fixtures/revolut.csv:revolut:main \
-  [--output=./exports/all.csv] \
-  [--format=csv|ofx]
-```
-
-### Command-line options
+#### Convert Options
 
 | Option | Required | Description |
 |--------|----------|-------------|
-| `--file=<path>:<bank>:<account>` | ✅ | Input file path, bank key, and the account label that should appear in exports. Provide the flag multiple times to merge statements. Relative paths are normalized against the current directory (and blocked if they traverse upward); absolute paths work out of the box. |
-| `--output=<path>` | ❌ | Relative or absolute path to the output file. Defaults to `./converted_transactions.csv` or `.ofx` depending on format. Directories must already exist. |
+| `--file=<path>:<bank>:<account>` | ✅ | Input file path, bank key, and account label. Repeatable. |
+| `--output=<path>` | ❌ | Output file path. Defaults to `./converted_transactions.{csv\|ofx}`. |
 | `--format=<csv\|ofx>` | ❌ | Export format. Defaults to `csv`. |
 
-Example scenarios:
+#### Examples
 
 ```bash
 # Convert one file to CSV
-dotnet run --project Smoothment -- convert \
+smoothment convert \
   --file=./downloads/tbank_export.csv:tbank:checking \
   --output=./exports/tbank.csv
 
 # Merge multiple banks and emit OFX
-dotnet run --project Smoothment -- convert \
+smoothment convert \
   --file=./tbank.csv:tbank:savings \
   --file=./revolut.csv:revolut:main \
   --file=./wise.csv:wise:eur \
   --format=ofx \
   --output=./exports/all_accounts.ofx
 ```
+
+### Managing Categories
+
+```bash
+# List all categories
+smoothment category
+
+# Add a new category
+smoothment category add "Groceries"
+
+# Remove a category
+smoothment category remove "Groceries"
+
+# Add a synonym to a category
+smoothment category synonym "Groceries" "supermarket"
+```
+
+### Managing Payees
+
+```bash
+# List all payees
+smoothment payee
+
+# Add a new payee
+smoothment payee add "Starbucks"
+
+# Add a payee with expense/top-up metadata
+smoothment payee add "Starbucks" \
+  --expense-category="Coffee" \
+  --expense-description="Coffee shop" \
+  --topup-category="Refund" \
+  --topup-description="Refund from coffee shop"
+
+# Remove a payee
+smoothment payee remove "Starbucks"
+
+# Add a synonym to a payee
+smoothment payee synonym "Starbucks" "STARBUCKS CORP"
+```
+
+### Command Reference
+
+| Command | Description |
+|---------|-------------|
+| `smoothment convert` | Convert bank statements to unified format |
+| `smoothment category` | List all categories |
+| `smoothment category add <name>` | Add a new category |
+| `smoothment category remove <name>` | Remove a category |
+| `smoothment category synonym <name> <synonym>` | Add a synonym to a category |
+| `smoothment payee` | List all payees |
+| `smoothment payee add <name> [options]` | Add a new payee |
+| `smoothment payee remove <name>` | Remove a payee |
+| `smoothment payee synonym <name> <synonym>` | Add a synonym to a payee |
+
+#### Payee Add Options
+
+| Option | Description |
+|--------|-------------|
+| `--expense-category` | Category for expense transactions |
+| `--expense-description` | Description for expense transactions |
+| `--topup-category` | Category for top-up transactions |
+| `--topup-description` | Description for top-up transactions |
 
 ## Output Formats
 

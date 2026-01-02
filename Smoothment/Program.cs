@@ -2,6 +2,8 @@ using System.CommandLine;
 using System.Diagnostics;
 using Smoothment.Commands;
 using Smoothment.Commands.Convert;
+using Smoothment.Commands.Category;
+using Smoothment.Commands.Payee;
 using Smoothment.Converters;
 using Smoothment.Database;
 using Smoothment.Exporters;
@@ -33,6 +35,8 @@ var rootCommand = new RootCommand(
       - Transfer detection and type classification (Expense/TopUp)
     """);
 rootCommand.Subcommands.Add(ConvertCommand.Create(host.Services));
+rootCommand.Subcommands.Add(CategoryCommand.Create(host.Services));
+rootCommand.Subcommands.Add(PayeeCommand.Create(host.Services));
 
 return rootCommand.Parse(args).Invoke();
 
