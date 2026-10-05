@@ -1,0 +1,13 @@
+Type,Product,Started Date,Completed Date,Description,Amount,Fee,Currency,State,Balance
+Card Payment,Current,2026-08-01 10:00:00,2026-08-01 12:00:00,Coffee Corner,-3.50,0.00,EUR,COMPLETED,96.50
+Transfer,Current,2026-08-01 10:00:05,2026-08-01 10:00:05,To EUR Travel,-0.50,0.00,EUR,COMPLETED,96.00
+Transfer,Deposit,2026-08-01 10:00:05,2026-08-01 10:00:05,To EUR Travel,0.50,0.00,EUR,COMPLETED,10.50
+Charge,Current,2026-08-02 07:00:00,2026-08-02 07:00:00,Metal plan fee,0.00,15.99,EUR,COMPLETED,80.01
+Transfer,Current,2026-08-03 09:00:00,2026-08-03 09:00:00,Transfer to Alex Example,-20.00,0.00,EUR,COMPLETED,60.01
+Deposit,Current,2026-08-04 09:00:00,2026-08-04 09:00:00,Payment from Sample Owner,100.00,0.00,EUR,COMPLETED,160.01
+Interest,Deposit,2026-08-05 00:00:00,2026-08-05 00:00:00,"Net interest paid to ""Travel"" for Aug 4, 2026",0.01,0.00,EUR,COMPLETED,10.51
+Transfer,Current,2026-08-06 09:00:00,2026-08-06 09:00:00,From EUR Travel,5.00,0.00,EUR,COMPLETED,165.01
+Transfer,Deposit,2026-08-06 09:00:00,2026-08-06 09:00:00,From EUR Travel,-5.00,0.00,EUR,COMPLETED,5.51
+Card Payment,Current,2026-08-07 09:00:00,,Pending Shop,-9.99,0.00,EUR,PENDING,
+Card Payment,Current,2026-08-08 09:00:00,,Reverted Shop,-4.00,0.00,EUR,REVERTED,
+Transfer,Current,2026-08-09 09:00:00,2026-08-09 09:00:00,To Alex Example,-1.00,0.00,EUR,COMPLETED,164.01

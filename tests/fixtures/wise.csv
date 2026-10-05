@@ -1,0 +1,5 @@
+"TransferWise ID",Date,"Date Time",Amount,Currency,Description,"Payment Reference","Running Balance","Exchange From","Exchange To","Exchange Rate","Payer Name","Payee Name","Payee Account Number",Merchant,"Card Last Four Digits","Card Holder Full Name",Attachment,Note,"Total fees","Exchange To Amount","Transaction Type","Transaction Details Type"
+TRANSFER-300000003,22-09-2026,22-09-2026 00:09:17.281,-42.00,EUR,Sent money to Sample Owner,,0.17,,,,,Sample Owner,ES12 3456 7890 1234 5678 9012,,,,,,0.00,,DEBIT,TRANSFER
+CARD-300000002,05-09-2026,05-09-2026 10:07:33.409,-2.70,EUR,Card transaction of 151.35 TRY issued by Sample Cafe ISTANBUL,,42.17,EUR,TRY,56.25080,,,,Sample Cafe ISTANBUL,1234,Sample Owner,,,0.01,151.35,DEBIT,CARD
+BALANCE_CASHBACK-300000001,01-09-2026,01-09-2026 09:00:00.000,0.87,EUR,Cashback,,44.87,,,,,,,,,,,,0.00,,CREDIT,CASHBACK
+TRANSFER-300000000,25-08-2026,25-08-2026 18:04:20.198,44.00,EUR,Received money from Sample Owner,Top-up,44.00,,,,Sample Owner,,,,,,,,0.00,,CREDIT,DEPOSIT

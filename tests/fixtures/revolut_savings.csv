@@ -1,0 +1,7 @@
+Date,Description,"Value, EUR",Price per share,Quantity of shares
+"Sep 27, 2026, 3:24:42 AM",Service Fee Charged EUR Class IE000TEST0000,-0.0072,,
+"Sep 27, 2026, 3:24:42 AM",Return PAID EUR Class R IE000TEST0000,0.1272,,
+"Sep 25, 2026, 12:24:30 PM",BUY EUR Class R IE000TEST0000,-200,1.00,200
+"Sep 22, 2026, 12:29:02 PM",SELL EUR Class R IE000TEST0000,-150,1.00,150
+"Sep 20, 2026, 12:00:00 PM",Return Reinvested Class R EUR IE000TEST0000,0.05,,
+"Sep 19, 2026, 12:00:00 PM",Return WITHDRAWN EUR Class R IE000TEST0000,-0.30,,
